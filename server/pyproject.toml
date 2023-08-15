@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "backend-app"
+version = "0.1.0"
+description = ""
+authors = ["Lucas Silva Ennes <lucassilvaennes@gmail.com>", "Lucas Henrique Diniz Ostroski <lucas.hdo@hotmail.com>"]
+readme = "README.md"
+packages = [{include = "server"}]
+
+[tool.taskipy.tasks]
+dev = { cmd = "python manage.py run --host=0.0.0.0", help = "runs the app in development mode" }
+test = { cmd = "python manage.py test", help = "runs all tests" }
+db = { cmd = "python manage.py db", help = "general purpose migration command" }
+db-migrate = { cmd = "python manage.py db migrate --message", help = "creates a new migration file" }
+db-upgrade = { cmd = "python manage.py db upgrade", help = "updates database with latest migration files" }
+db-downgrade = { cmd = "python manage.py db downgrade", help = "reverts database to previous migration" }
+
+
+[tool.poetry.dependencies]
+python = "^3.10"
+flask-restx = "^1.1.0"
+flask = "^2.3.2"
+flask-migrate = "^4.0.4"
+flask-cors = "^4.0.0"
+taskipy = "^1.12.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
