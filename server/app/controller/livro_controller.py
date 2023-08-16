@@ -1,32 +1,44 @@
-from flask import request
+from flask import request, make_response
 from flask_restx import Resource, marshal
+from flask_cors import CORS, cross_origin
 
 from app.util.dto import LivroDto
-from app.service.livro_service import editar_livro, excluir_livro, listar_todas_livros, criar_livro
+from app.service.livro_service import (
+    editar_livro,
+    excluir_livro,
+    listar_todas_livros,
+    criar_livro,
+)
 
 api = LivroDto.api
 _livro = LivroDto.livro
 
-@api.route('/')
+
+@api.route("/", methods=["POST", "GET", "OPTIONS"])
 class Livro(Resource):
+    @api.doc('list_of_registered_users')
+    @api.response(201, 'User successfully created.')
     @api.expect(_livro, validate=True)
     def post(self):
+        print(request.headers)
         data = request.json
         try:
             response = criar_livro(data)
             return response, 201
         except Exception as e:
-            return {"message": e}, 500
+            return {"message": str(e)}, 500
 
-    @api.marshal_list_with(_livro, envelope='data')
+    @api.marshal_list_with(_livro, envelope="data")
     def get(self):
         try:
             return listar_todas_livros(), 200
         except Exception as e:
-            return {"message": "An error occurred while fetching books."}, 500
+            return {"message": str(e)}, 500
+    def options():
+        return "", 200
 
-@api.route('/<int:id_livro>')
-@api.param('id_livro', 'Book ID')
+@api.route("/<int:id_livro>")
+@api.param("id_livro", "Book ID")
 class LivroComId(Resource):
     @api.expect(_livro, validate=True)
     def put(self, id_livro):

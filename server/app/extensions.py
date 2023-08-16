@@ -4,7 +4,8 @@ from flask_migrate import Migrate
 
 db = SQLAlchemy()
 migrate = Migrate()
-api = Api(title='Basicão Fullstack',
-          version='1.0',
-          description='API braba 🔥',
-          )
+api = Api(
+    title="Basicão Fullstack",
+    version="1.0",
+    description="API braba 🔥",
+)
