@@ -14,10 +14,8 @@ api = LivroDto.api
 _livro = LivroDto.livro
 
 
-@api.route("/", methods=["POST", "GET", "OPTIONS"])
+@api.route("/")
 class Livro(Resource):
-    @api.doc('list_of_registered_users')
-    @api.response(201, 'User successfully created.')
     @api.expect(_livro, validate=True)
     def post(self):
         print(request.headers)
@@ -34,8 +32,6 @@ class Livro(Resource):
             return listar_todas_livros(), 200
         except Exception as e:
             return {"message": str(e)}, 500
-    def options():
-        return "", 200
 
 @api.route("/<int:id_livro>")
 @api.param("id_livro", "Book ID")

@@ -18,5 +18,6 @@ export const BookGenres = [
     "Fantasia Urbana", 
     "Distopia", 
     "Infantil", 
-    "Juvenil"
+    "Juvenil",
+    "Outro",
 ]

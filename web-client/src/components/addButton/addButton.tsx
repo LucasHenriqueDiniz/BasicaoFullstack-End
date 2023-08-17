@@ -1,11 +1,11 @@
-import { Col, Card, Form, Modal, Input, Button, Select, InputNumber } from 'antd';
+import { Col, Card, Form, Modal, Input, Button, Select, InputNumber, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { BookGenres } from '../../utils/genresArr';
 import { criarLivro } from "../../services/apiFunctions";
 import { livroType } from '../../types/livro';
 
-const AddButton = () => {
+const AddButton = (updateBooks) => {
     const [bookModalVisible, setBookModalVisible] = useState(false);
 
     function createBook() {
@@ -18,20 +18,34 @@ const AddButton = () => {
 
     function onSubmit(values: livroType) {
         criarLivro(values)
-    }
+          .then(response => {
+            message.success(values.titulo + " criado com sucesso!")
+            closeModal();
+          })
+          .catch(error => {
+            if (error.response) {
+              message.error(`API Request Error: ${error.response.status} (${error.response.statusText})`);
+            } else {
+                message.error("Network Error:", error.message);
+            }
+            closeModal();
+            updateBooks();
+          });
+      }
 
     return (
         <>
-            <Col span={6}>
+            <Col span={4}>
                 <Card
                     onClick={createBook}
                     title={false}
-                    style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    hoverable={true}
+                    style={{ width: '100%', minHeight: '300px', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
                 >
                     <PlusOutlined style={{ fontSize: '3rem' }} />
                 </Card>
             </Col>
-            <Modal open={bookModalVisible} footer={false} onCancel={closeModal}>
+            <Modal open={bookModalVisible} footer={false} onCancel={closeModal} destroyOnClose={true} >
                 <Form
                     layout={'vertical'}
                     onFinish={onSubmit}
@@ -42,10 +56,10 @@ const AddButton = () => {
                     <Form.Item label={'Autor'} name={'autor'}>
                         <Input />
                     </Form.Item>
-                    <Form.Item label={'Ano'} name={'ano'}>
-                        <InputNumber controls={false} style={{ width: '100%'}} maxLength={4}/>
+                    <Form.Item label={'Ano'} name={'ano_publicacao'}>
+                        <InputNumber controls={false} style={{ width: '100%' }} maxLength={4} />
                     </Form.Item>
-                    <Form.Item label={'Genero'} name={'genre'}>
+                    <Form.Item label={'Genero'} name={'categoria'}>
                         <Select
                             placeholder={'Escolha um genero'}
                             style={{ width: '100%' }}
@@ -62,9 +76,9 @@ const AddButton = () => {
                     <Form.Item label={'Sinopse'} name={'sinopse'}>
                         <Input.TextArea />
                     </Form.Item>
-                    <div style={{ width: '100%', gap: '1rem', display: 'flex', justifyContent: 'flex-end'}}>
-                    <Button type={'primary'} danger onClick={closeModal}>Cancelar</Button>
-                    <Button type={'primary'} htmlType={'submit'}>Submit</Button>
+                    <div style={{ width: '100%', gap: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button type={'primary'} danger onClick={closeModal}>Cancelar</Button>
+                        <Button type={'primary'} htmlType={'submit'}>Submit</Button>
                     </div>
                 </Form>
             </Modal>
